@@ -1,1 +1,92 @@
 @import "tailwindcss";
+/* Tailwind */
+@import "tailwindcss";
+
+/* 🌐 Global Font */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* 🎨 Smooth UI Experience */
+* {
+  transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+/* 🧼 Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* 🌙 Dark Mode Scrollbar */
+.dark ::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+/* 🧾 Typography Improve */
+h1, h2, h3 {
+  letter-spacing: -0.5px;
+}
+
+p {
+  line-height: 1.7;
+}
+
+/* 🔥 Card Style Helper */
+.card {
+  @apply bg-white dark:bg-gray-800 rounded-2xl shadow-md p-4;
+}
+
+/* 🔥 Button Base Style */
+.btn {
+  @apply px-5 py-2 rounded-xl font-medium shadow transition;
+}
+
+/* 🟢 Primary Button */
+.btn-primary {
+  @apply bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-500;
+}
+
+/* 🟣 Secondary Button */
+.btn-secondary {
+  @apply bg-purple-600 text-white hover:bg-purple-700;
+}
+
+/* 🔴 Danger Button */
+.btn-danger {
+  @apply bg-red-500 text-white hover:bg-red-600;
+}
+
+/* 🧠 Input Styling */
+.input {
+  @apply border rounded-xl px-4 py-2 w-full 
+  bg-white dark:bg-gray-800 
+  text-gray-800 dark:text-white 
+  focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+/* ✨ Glass Effect (Navbar use) */
+.glass {
+  @apply backdrop-blur bg-white/70 dark:bg-gray-900/70;
+}
+
+/* 🎯 Container helper */
+.container-custom {
+  @apply max-w-6xl mx-auto px-4 md:px-6;
+}

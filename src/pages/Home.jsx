@@ -1,56 +1,50 @@
 import React, { useEffect, useState } from "react";
 import appwriteService from "../appwrite/config";
 import { Container, PostCard } from "../components";
-import { useSelector } from "react-redux";
 
 function Home() {
   const [posts, setPosts] = useState([]);
-  const authStatus = useSelector((state) => state.auth.status);
 
   useEffect(() => {
-    if (authStatus) {
-      appwriteService.getPosts().then((posts) => {
-        if (posts) {
-          setPosts(posts.documents);
-        }
-      });
-    }
-  }, [authStatus]);
+    appwriteService.getPosts().then((res) => {
+      if (res) setPosts(res.documents);
+    });
+  }, []);
 
-  // 🔴 If user not logged in
-  if (!authStatus) {
-    return (
-      <div className="w-full py-8 mt-4 text-center">
-        <Container>
-          <h1 className="text-2xl font-bold">Login to read posts</h1>
-        </Container>
-      </div>
-    );
-  }
-
-  // 🟡 If logged in but no posts
-  if (posts.length === 0) {
-    return (
-      <div className="w-full py-8 mt-4 text-center">
-        <Container>
-          <h1 className="text-2xl font-bold">No posts available</h1>
-        </Container>
-      </div>
-    );
-  }
-
-  // 🟢 Show posts
   return (
-    <div className="w-full py-8">
-      <Container>
-        <div className="flex flex-wrap">
-          {posts.map((post) => (
-            <div key={post.$id} className="p-2 w-1/4">
-              <PostCard {...post} />
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+
+      {/* 🔥 HERO */}
+      <div className="py-20 text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+        <Container>
+          <h1 className="text-4xl md:text-5xl font-bold">
+            AI Powered Blogging 🚀
+          </h1>
+          <p className="mt-4 text-gray-200">
+            Write smarter. Read faster. Detect fake news instantly.
+          </p>
+        </Container>
+      </div>
+
+      {/* POSTS */}
+      <div className="py-10">
+        <Container>
+
+          <h2 className="text-2xl font-bold mb-6">Latest Posts</h2>
+
+          {posts.length === 0 ? (
+            <p className="text-center text-gray-500">No posts yet</p>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {posts.map((post) => (
+                <PostCard key={post.$id} {...post} />
+              ))}
             </div>
-          ))}
-        </div>
-      </Container>
+          )}
+
+        </Container>
+      </div>
+
     </div>
   );
 }
