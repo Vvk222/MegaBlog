@@ -22,7 +22,7 @@ export default function PostForm({ post }) {
 
   const [aiLoading, setAiLoading] = useState(false);
 
-  // 🔥 AI GENERATE FUNCTION
+  // 🤖 AI GENERATE
   const handleAIGenerate = async () => {
     const title = getValues("title");
 
@@ -65,11 +65,9 @@ export default function PostForm({ post }) {
         const file = await appwriteService.uploadFile(data.image[0]);
 
         if (file) {
-          const fileId = file.$id;
-
           const dbPost = await appwriteService.createPost({
             ...data,
-            featuredImage: fileId,
+            featuredImage: file.$id,
             userId: userData.$id,
           });
 
@@ -109,6 +107,8 @@ export default function PostForm({ post }) {
 
   return (
     <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
+      
+      {/* LEFT SIDE */}
       <div className="w-2/3 px-2">
         <Input
           label="Title :"
@@ -129,7 +129,6 @@ export default function PostForm({ post }) {
           }}
         />
 
-        {/* 🔥 AI BUTTON */}
         <Button type="button" onClick={handleAIGenerate} className="mb-4">
           {aiLoading ? "Generating..." : "Generate with AI"}
         </Button>
@@ -142,6 +141,7 @@ export default function PostForm({ post }) {
         />
       </div>
 
+      {/* RIGHT SIDE */}
       <div className="w-1/3 px-2">
         <Input
           label="Featured Image :"
@@ -151,10 +151,11 @@ export default function PostForm({ post }) {
           {...register("image", { required: !post })}
         />
 
+        {/* 🔥 FIXED PART */}
         {post && (
           <div className="w-full mb-4">
             <img
-              src={appwriteService.getFilePreview(post.featuredImage)}
+              src={appwriteService.getFileView(post.featuredImage)}
               alt={post.title}
               className="rounded-lg"
             />

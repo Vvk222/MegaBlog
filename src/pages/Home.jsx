@@ -4,47 +4,64 @@ import { Container, PostCard } from "../components";
 
 function Home() {
   const [posts, setPosts] = useState([]);
+  const [trendingPosts, setTrendingPosts] = useState([]);
 
   useEffect(() => {
     appwriteService.getPosts().then((res) => {
-      if (res) setPosts(res.documents);
+      if (res) {
+        const allPosts = res.documents;
+
+        setPosts(allPosts);
+
+        // 🔥 TRENDING LOGIC
+        const trending = [...allPosts]
+          .sort((a, b) => (b.likes || 0) - (a.likes || 0))
+          .slice(0, 3);
+
+        setTrendingPosts(trending);
+      }
     });
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen py-10 bg-gray-50 dark:bg-gray-900">
+      <Container>
 
-      {/* 🔥 HERO */}
-      <div className="py-20 text-center bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-        <Container>
-          <h1 className="text-4xl md:text-5xl font-bold">
-            AI Powered Blogging 🚀
-          </h1>
-          <p className="mt-4 text-gray-200">
-            Write smarter. Read faster. Detect fake news instantly.
-          </p>
-        </Container>
-      </div>
+        {/* 🔥 TRENDING SECTION */}
+        <div className="mb-10">
+          <h2 className="text-2xl font-bold mb-4">
+            🔥 Trending Posts
+          </h2>
 
-      {/* POSTS */}
-      <div className="py-10">
-        <Container>
+          {trendingPosts.length === 0 ? (
+            <p className="text-gray-500">No trending posts yet</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {trendingPosts.map((post) => (
+                <PostCard key={post.$id} {...post} />
+              ))}
+            </div>
+          )}
+        </div>
 
-          <h2 className="text-2xl font-bold mb-6">Latest Posts</h2>
+        {/* 📝 ALL POSTS */}
+        <div>
+          <h2 className="text-2xl font-bold mb-4">
+            All Posts
+          </h2>
 
           {posts.length === 0 ? (
-            <p className="text-center text-gray-500">No posts yet</p>
+            <p className="text-gray-500">No posts available</p>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {posts.map((post) => (
                 <PostCard key={post.$id} {...post} />
               ))}
             </div>
           )}
+        </div>
 
-        </Container>
-      </div>
-
+      </Container>
     </div>
   );
 }

@@ -60,7 +60,7 @@ export default function Post() {
       post.$id,
       userData.$id,
       likes,
-      post.likedBy || [],
+      post.likedBy || []
     );
 
     setPost(updated);
@@ -97,6 +97,15 @@ export default function Post() {
     setChecking(false);
   };
 
+  // ✏️ DELETE POST
+  const handleDeletePost = async () => {
+    const confirmDelete = confirm("Are you sure you want to delete this post?");
+    if (!confirmDelete) return;
+
+    await appwriteService.deletePost(post.$id);
+    navigate("/");
+  };
+
   if (!post) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -105,16 +114,16 @@ export default function Post() {
     );
   }
 
-  // 🧠 Best Result
+  // 🔥 Fix for HF response
   let best = null;
-
   if (newsResult) {
-    // 🔥 flatten response
-    const data = Array.isArray(newsResult[0]) ? newsResult[0] : newsResult;
+    const data = Array.isArray(newsResult[0])
+      ? newsResult[0]
+      : newsResult;
 
     if (data.length > 0) {
       best = data.reduce((prev, curr) =>
-        curr.score > prev.score ? curr : prev,
+        curr.score > prev.score ? curr : prev
       );
     }
   }
@@ -127,6 +136,7 @@ export default function Post() {
   return (
     <div className="min-h-screen py-10 bg-gray-50 dark:bg-gray-900">
       <Container>
+
         {/* 🔥 HERO */}
         <div className="relative rounded-2xl overflow-hidden mb-8">
           <img
@@ -137,7 +147,6 @@ export default function Post() {
             }
             className="w-full h-72 md:h-96 object-cover"
           />
-
           <div className="absolute inset-0 bg-black/50"></div>
 
           <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-4">
@@ -150,11 +159,25 @@ export default function Post() {
           </div>
         </div>
 
+        {/* ✏️ EDIT + DELETE */}
+        {userData?.$id === post.userId && (
+          <div className="flex gap-3 mb-6">
+            <Button onClick={() => navigate(`/edit-post/${post.$id}`)}>
+              ✏️ Edit
+            </Button>
+
+            <Button variant="danger" onClick={handleDeletePost}>
+              🗑 Delete
+            </Button>
+          </div>
+        )}
+
         {/* ⚡ ACTION BAR */}
         <div className="flex flex-wrap gap-3 items-center mb-6">
+
           <button
             onClick={handleLike}
-            className={`px-4 py-2 rounded-xl text-white transition ${
+            className={`px-4 py-2 rounded-xl text-white ${
               liked
                 ? "bg-red-500 hover:bg-red-600"
                 : "bg-gray-600 hover:bg-gray-700"
@@ -186,32 +209,25 @@ export default function Post() {
 
         {/* 🧠 FAKE NEWS */}
         {best && (
-          <div
-            className={`p-4 rounded-xl mb-6 shadow ${
-              best.label === "LABEL_1"
-                ? "bg-red-100 dark:bg-red-900"
-                : "bg-green-100 dark:bg-green-900"
-            }`}
-          >
-            <p className="font-bold text-lg">{labelMap[best.label]}</p>
-
-            <div className="w-full bg-gray-200 h-3 rounded-full mt-3">
-              <div
-                className={`h-3 rounded-full ${
-                  best.label === "LABEL_1" ? "bg-red-500" : "bg-green-500"
-                }`}
-                style={{ width: `${(best.score * 100).toFixed(0)}%` }}
-              />
-            </div>
+          <div className={`p-4 rounded-xl mb-6 shadow ${
+            best.label === "LABEL_1"
+              ? "bg-red-100 dark:bg-red-900"
+              : "bg-green-100 dark:bg-green-900"
+          }`}>
+            <p className="font-bold text-lg">
+              {labelMap[best.label]}
+            </p>
 
             <p className="text-sm mt-2">
-              Confidence: {best?.score ? (best.score * 100).toFixed(2) : "0"}%
+              Confidence: {(best.score * 100).toFixed(2)}%
             </p>
           </div>
         )}
 
         {/* 📄 CONTENT */}
-        <div className="card leading-relaxed mb-8">{parse(post.content)}</div>
+        <div className="card leading-relaxed mb-8">
+          {parse(post.content)}
+        </div>
 
         {/* 💬 COMMENTS */}
         <div>
@@ -223,8 +239,9 @@ export default function Post() {
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Write a comment..."
             />
-
-            <Button onClick={handleAddComment}>Post</Button>
+            <Button onClick={handleAddComment}>
+              Post
+            </Button>
           </div>
 
           {comments.map((c) => (
@@ -248,6 +265,7 @@ export default function Post() {
             </div>
           ))}
         </div>
+
       </Container>
     </div>
   );
